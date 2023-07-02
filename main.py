@@ -8,6 +8,7 @@ sprites = [i for i in listdir(folder)]
 testImg = Image.open("{}/{}".format(folder, sprites[0]))
 imgWidth = testImg.width
 imgHeight = testImg.height
+imgFormat = testImg.format
 del testImg
 
 img = Image.new('RGBA', (imgWidth * (len(sprites)**hor), imgHeight * ((len(sprites)**int(not(hor))))))
@@ -16,4 +17,4 @@ for i in sprites:
     sprite = Image.open("{}/{}".format(folder, i))
     img.paste(sprite, (co * hor, co * int(not(hor))))
     co += imgWidth
-img.save("ss.png")
+img.save("ss.{}".format(imgFormat.lower()))
