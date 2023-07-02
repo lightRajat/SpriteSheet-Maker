@@ -4,6 +4,8 @@ from os import listdir
 hor = False
 folder = "sprites"
 sprites = [i for i in listdir(folder)]
+outFolder = "./.."
+outName = "result"
 
 testImg = Image.open("{}/{}".format(folder, sprites[0]))
 imgWidth = testImg.width
@@ -17,4 +19,4 @@ for i in sprites:
     sprite = Image.open("{}/{}".format(folder, i))
     img.paste(sprite, (co * hor, co * int(not(hor))))
     co += imgWidth
-img.save("ss.{}".format(imgFormat.lower()))
+img.save("{}/{}.{}".format(outFolder, outName, imgFormat.lower()))
