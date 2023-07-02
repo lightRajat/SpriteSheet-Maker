@@ -4,10 +4,15 @@ from os import listdir
 folder = "sprites"
 sprites = [i for i in listdir(folder)]
 
-img = Image.new('RGBA', (len(sprites) * 64, 64))
+testImg = Image.open("{}/{}".format(folder, sprites[0]))
+imgWidth = testImg.width
+imgHeight = testImg.height
+del testImg
+
+img = Image.new('RGBA', (imgWidth * len(sprites), imgHeight))
 x = 0
 for i in sprites:
     sprite = Image.open("{}/{}".format(folder, i))
     img.paste(sprite, (x, 0))
-    x += 64
+    x += imgWidth
 img.save("ss.png")
