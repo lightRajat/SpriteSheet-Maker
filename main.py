@@ -1,6 +1,7 @@
-from tkinter import Tk, Frame, Radiobutton, IntVar, Label, Entry, Button, Scrollbar, Listbox, filedialog
+from tkinter import Tk, Frame, Radiobutton, BooleanVar, Label, Entry, Button, Scrollbar, Listbox, filedialog
 from os import listdir
 
+horz = None # True (later in code)
 sprites = list()
 
 def selectFolder():
@@ -38,6 +39,9 @@ def clearList():
     sprites.clear()
     lbFiles.delete(0, 'end')
 
+def setOrientation():
+    print(horz.get())
+
 ## Main Window 
 window = Tk()
 window.title("SpriteSheet Maker")
@@ -49,13 +53,13 @@ mainFrame.pack(fill = 'both', expand = 'true', padx = 10, pady = 10)
 frame1 = Frame(master = mainFrame)
 frame1.pack(pady = 3)
 
-src = IntVar()
+src = None
 
-rFolder = Radiobutton(master = frame1, text = "Folder", variable = src, value = 1, command = selectFolder)
+rFolder = Radiobutton(master = frame1, text = "Folder", variable = src, value = True, command = selectFolder)
 rFolder.pack(side = 'left')
 rFolder.select()
 
-rFiles = Radiobutton(master = frame1, text = "Multiple Files", variable = src, value = 2, command = selectFiles)
+rFiles = Radiobutton(master = frame1, text = "Multiple Files", variable = src, value = False, command = selectFiles)
 rFiles.pack(side = 'right')
 
 ## Frame 2 - File Selection
@@ -99,14 +103,14 @@ frame4.pack(pady = 3)
 lOrien = Label(master = frame4, text = "Orientation: ")
 lOrien.pack(side = 'left')
 
-orien = IntVar()
+horz = BooleanVar()
 
-rOrien = Radiobutton(master = frame4, text = "Horizontal", variable = orien, value = 1)
-rOrien.pack(side = 'left')
-rOrien.select()
+rOrienH = Radiobutton(master = frame4, text = "Horizontal", variable = horz, value = True, command = setOrientation)
+rOrienH.pack(side = 'left')
+rOrienH.select()
 
-rOrien = Radiobutton(master = frame4, text = "Vertical", variable = orien, value = 2)
-rOrien.pack(side = 'right')
+rOrienV = Radiobutton(master = frame4, text = "Vertical", variable = horz, value = False, command = setOrientation)
+rOrienV.pack(side = 'right')
 
 ## Frame 5 - Output
 frame5 = Frame(master = mainFrame)
@@ -134,9 +138,6 @@ window.mainloop()
 
 ##from PIL import Image
 ##
-##hor = True
-##folder = "sprites"
-##sprites = listdir(folder)
 ##outFolder = "./.."
 ##outName = "result"
 ##
