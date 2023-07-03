@@ -1,5 +1,6 @@
 from tkinter import Tk, Frame, Radiobutton, BooleanVar, Label, Entry, Button, Scrollbar, Listbox, filedialog
 from os import listdir, getcwd
+from PIL import Image
 
 horz = None # True (later in code)
 sprites = list()
@@ -25,7 +26,7 @@ def srcBrowseFolder():
         updateFiles(["{}/{}".format(folder, i) for i in listdir(folder)])
 
 def srcBrowseFiles():
-    files = filedialog.askopenfilenames(title = "Select sprites", filetypes = (("Image Files", '*.jpg *.jpeg'), ("Image Files", '*.png')), initialdir = currDir)
+    files = filedialog.askopenfilenames(title = "Select one or more sprites", filetypes = (("Image Files", '*.jpg *.jpeg'), ("Image Files", '*.png')), initialdir = currDir)
     if files:
         global sprites
         updateFiles(files)
@@ -76,6 +77,29 @@ def log(log, arg = None):
     
     lLog.config(text = "-- {} --".format(logs[log]))
 
+def make():
+    testImg = Image.open(sprites[0])
+    imgWidth = testImg.width
+    imgHeight = testImg.height
+    imgFormat = testImg.format
+    del testImg
+    hor = horz.get()
+    output = eOut.get()
+
+    img = Image.new('RGBA', (imgWidth * len(sprites)**hor, imgHeight * len(sprites)**int(not(hor)) ))
+    co = 0
+    if hor:
+        for i in sprites:
+            sprite = Image.open(i)
+            img.paste(sprite, (co, 0))
+            co += imgWidth
+    else:
+        for i in sprites:
+            sprite = Image.open(i)
+            img.paste(sprite, (0, co))
+            co += imgHeight
+    img.save(output)
+
 ## Main Window 
 window = Tk()
 window.title("SpriteSheet Maker")
@@ -93,7 +117,7 @@ rFolder = Radiobutton(master = frame1, text = "Folder", variable = src, value = 
 rFolder.pack(side = 'left')
 rFolder.select()
 
-rFiles = Radiobutton(master = frame1, text = "Multiple Files", variable = src, value = False, command = selectFiles)
+rFiles = Radiobutton(master = frame1, text = "Files", variable = src, value = False, command = selectFiles)
 rFiles.pack(side = 'right')
 
 ## Frame 2 - File Selection
@@ -165,22 +189,7 @@ lLog.pack(pady = 3)
 log(0)
 
 ## Area 7 - Submit
-bSubmit = Button(master = mainFrame, text = "Make", state = 'disabled')
+bSubmit = Button(master = mainFrame, text = "Make", state = 'disabled', command = make)
 bSubmit.pack(pady = 3)
 
 window.mainloop()
-
-##from PIL import Image
-##testImg = Image.open("{}/{}".format(folder, sprites[0]))
-##imgWidth = testImg.width
-##imgHeight = testImg.height
-##imgFormat = testImg.format
-##del testImg
-##
-##img = Image.new('RGBA', (imgWidth * len(sprites)**hor, imgHeight * len(sprites)**int(not(hor)) ))
-##co = 0
-##for i in sprites:
-##    sprite = Image.open("{}/{}".format(folder, i))
-##    img.paste(sprite, (co * hor, co * int(not(hor))))
-##    co += imgWidth
-##img.save("{}/{}.{}".format(outFolder, outName, imgFormat.lower()))
