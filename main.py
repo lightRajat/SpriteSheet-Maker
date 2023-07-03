@@ -1,4 +1,7 @@
 from tkinter import Tk, Frame, Radiobutton, IntVar, Label, Entry, Button, Scrollbar, Listbox, filedialog
+from os import listdir
+
+sprites = list()
 
 def selectFolder():
     eSrc.config(state = 'normal')
@@ -9,10 +12,18 @@ def selectFiles():
     bSrc.config(command = srcBrowseFiles)
 
 def srcBrowseFolder():
-    print("fubar")
+    folder = filedialog.askdirectory(title = "Select the folder containing Sprites")
+    if folder:
+        eSrc.delete(0, 'end')
+        eSrc.insert(0, folder)
+        global sprites
+        sprites.extend(listdir(folder))
 
 def srcBrowseFiles():
-    print("fubar2")
+    files = filedialog.askopenfilenames(title = "Select sprites", filetypes = (("Image Files", '*.jpg *.jpeg'), ("Image Files", '*.png')))
+    if files:
+        global sprites
+        sprites.extend(files)
 
 ## Main Window 
 window = Tk()
@@ -106,7 +117,6 @@ bSubmit.pack(pady = 3)
 window.mainloop()
 
 ##from PIL import Image
-##from os import listdir
 ##
 ##hor = True
 ##folder = "sprites"
