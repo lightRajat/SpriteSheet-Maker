@@ -1,4 +1,18 @@
-from tkinter import Tk, Frame, Radiobutton, IntVar, Label, Entry, Button, Scrollbar, Listbox
+from tkinter import Tk, Frame, Radiobutton, IntVar, Label, Entry, Button, Scrollbar, Listbox, filedialog
+
+def selectFolder():
+    eSrc.config(state = 'normal')
+    bSrc.config(command = srcBrowseFolder)
+
+def selectFiles():
+    eSrc.config(state = 'disabled')
+    bSrc.config(command = srcBrowseFiles)
+
+def srcBrowseFolder():
+    print("fubar")
+
+def srcBrowseFiles():
+    print("fubar2")
 
 ## Main Window 
 window = Tk()
@@ -13,11 +27,11 @@ frame1.pack(pady = 3)
 
 src = IntVar()
 
-rFolder = Radiobutton(master = frame1, text = "Folder", variable = src, value = 1)
+rFolder = Radiobutton(master = frame1, text = "Folder", variable = src, value = 1, command = selectFolder)
 rFolder.pack(side = 'left')
 rFolder.select()
 
-rFiles = Radiobutton(master = frame1, text = "Multiple Files", variable = src, value = 2)
+rFiles = Radiobutton(master = frame1, text = "Multiple Files", variable = src, value = 2, command = selectFiles)
 rFiles.pack(side = 'right')
 
 ## Frame 2 - File Selection
@@ -27,11 +41,12 @@ frame2.pack(pady = 3)
 lSrc = Label(master = frame2, text = "Source Folder: ")
 lSrc.pack(side = 'left')
 
+
 eSrc = Entry(master = frame2, width = 50)
 eSrc.pack(side = 'left')
 eSrc.insert(0, "D:\Dinu\Spaces\Python\practice\ssMaker")
 
-bSrc = Button(master = frame2, text = "Browse")
+bSrc = Button(master = frame2, text = "Browse", command = srcBrowseFolder)
 bSrc.pack(side = 'left', padx = 10)
 
 ## Frame 3 - Files
