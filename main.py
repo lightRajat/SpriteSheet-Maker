@@ -1,8 +1,9 @@
 from tkinter import Tk, Frame, Radiobutton, BooleanVar, Label, Entry, Button, Scrollbar, Listbox, filedialog
-from os import listdir
+from os import listdir, getcwd
 
 horz = None # True (later in code)
 sprites = list()
+currDir = getcwd()
 
 def selectFolder():
     eSrc.config(state = 'normal')
@@ -13,14 +14,14 @@ def selectFiles():
     bSrc.config(command = srcBrowseFiles)
 
 def srcBrowseFolder():
-    folder = filedialog.askdirectory(title = "Select the folder containing Sprites")
+    folder = filedialog.askdirectory(title = "Select the folder containing Sprites", initialdir = currDir)
     if folder:
         eSrc.delete(0, 'end')
         eSrc.insert(0, folder)
         updateFiles(["{}/{}".format(folder, i) for i in listdir(folder)])
 
 def srcBrowseFiles():
-    files = filedialog.askopenfilenames(title = "Select sprites", filetypes = (("Image Files", '*.jpg *.jpeg'), ("Image Files", '*.png')))
+    files = filedialog.askopenfilenames(title = "Select sprites", filetypes = (("Image Files", '*.jpg *.jpeg'), ("Image Files", '*.png')), initialdir = currDir)
     if files:
         global sprites
         updateFiles(files)
@@ -41,6 +42,12 @@ def clearList():
 
 def setOrientation():
     print(horz.get())
+
+def outBrowse():
+    output = filedialog.asksaveasfilename(title = "Save As", filetypes = (("PNG File", '*.png'), ("JPG File", '*.jpg *.jpeg')), initialdir = currDir, defaultextension = '.png')
+    if output:
+        eOut.delete(0, 'end')
+        eOut.insert(0, output)
 
 ## Main Window 
 window = Tk()
@@ -72,7 +79,7 @@ lSrc.pack(side = 'left')
 
 eSrc = Entry(master = frame2, width = 50)
 eSrc.pack(side = 'left')
-eSrc.insert(0, "D:\Dinu\Spaces\Python\practice\ssMaker")
+eSrc.insert(0, currDir)
 
 bSrc = Button(master = frame2, text = "Browse", command = srcBrowseFolder)
 bSrc.pack(side = 'left', padx = 10)
@@ -123,7 +130,7 @@ eOut = Entry(master = frame5, width = 55)
 eOut.pack(side = 'left')
 eOut.insert(0, "D:\Dinu\Spaces\Python\practice\ssMaker\spritesheet.png")
 
-bOut = Button(master = frame5, text = "Browse")
+bOut = Button(master = frame5, text = "Browse", command = outBrowse)
 bOut.pack(side = 'left', padx = 10)
 
 ## Area 6 - Log
