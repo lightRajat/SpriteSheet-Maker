@@ -76,6 +76,9 @@ sbFiles.pack(side = 'left', fill = 'both')
 lbFiles.config(yscrollcommand = sbFiles.set)
 sbFiles.config(command = lbFiles.yview)
 
+bClear = Button(master = frame3, text = "Clear List")
+bClear.pack(side = 'left')
+
 ## Frame 4 - Orientation
 frame4 = Frame(master = mainFrame)
 frame4.pack(pady = 3)
