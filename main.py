@@ -1,4 +1,4 @@
-from tkinter import Tk, Frame, Radiobutton, BooleanVar, Label, Entry, Button, Scrollbar, Listbox, filedialog
+from tkinter import Tk, Frame, Radiobutton, BooleanVar, Label, Entry, Button, Scrollbar, Listbox, filedialog, font
 from os import listdir, getcwd
 from PIL import Image
 
@@ -6,6 +6,7 @@ horz = None # True (later in code)
 sprites = list()
 currDir = getcwd()
 output = currDir + "\spritesheet.png"
+appFont = ("Comic Sans MS", 16)
 
 def selectFolder():
     lSrc.config(state = 'normal')
@@ -100,12 +101,14 @@ def make():
             co += imgHeight
     img.save(output)
 
-## Main Window 
+## Main Window, outer frame & default font
 window = Tk()
 window.title("SpriteSheet Maker")
 
 mainFrame = Frame(master = window)
 mainFrame.pack(fill = 'both', expand = 'true', padx = 10, pady = 10)
+
+font.nametofont("TkDefaultFont").configure(family = appFont[0], size = appFont[1])
 
 ## Frame 1 - Source
 frame1 = Frame(master = mainFrame)
