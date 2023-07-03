@@ -4,20 +4,24 @@ from os import listdir, getcwd
 horz = None # True (later in code)
 sprites = list()
 currDir = getcwd()
+output = currDir + "\spritesheet.png"
 
 def selectFolder():
-    eSrc.config(state = 'normal')
+    lSrc.config(state = 'normal')
+    lSrcLoc.config(state = 'normal')
     bSrc.config(command = srcBrowseFolder)
+    log(0)
 
 def selectFiles():
-    eSrc.config(state = 'disabled')
+    lSrc.config(state = 'disabled')
+    lSrcLoc.config(state = 'disabled')
     bSrc.config(command = srcBrowseFiles)
+    log(1)
 
 def srcBrowseFolder():
     folder = filedialog.askdirectory(title = "Select the folder containing Sprites", initialdir = currDir)
     if folder:
-        eSrc.delete(0, 'end')
-        eSrc.insert(0, folder)
+        lSrcLoc.config(text = folder)
         updateFiles(["{}/{}".format(folder, i) for i in listdir(folder)])
 
 def srcBrowseFiles():
@@ -28,10 +32,15 @@ def srcBrowseFiles():
 
 def updateFiles(files):
     global sprites
+    x = 0
     for i in files:
         if i not in sprites:
+            x += 1
             sprites.append(i)
             lbFiles.insert('end', extractNames(i))
+            bClear.config(state = 'normal')
+            bSubmit.config(state = 'normal')
+    log(2, x)
 
 def extractNames(path):
     return path[path.rfind('/') + 1:]
@@ -39,15 +48,33 @@ def extractNames(path):
 def clearList():
     sprites.clear()
     lbFiles.delete(0, 'end')
-
-def setOrientation():
-    print(horz.get())
+    bClear.config(state = 'disabled')
+    bSubmit.config(state = 'disabled')
+    log(3)
 
 def outBrowse():
-    output = filedialog.asksaveasfilename(title = "Save As", filetypes = (("PNG File", '*.png'), ("JPG File", '*.jpg *.jpeg')), initialdir = currDir, defaultextension = '.png')
-    if output:
+    out = filedialog.asksaveasfilename(title = "Save As", filetypes = (("PNG File", '*.png'), ("JPG File", '*.jpg *.jpeg')), initialdir = currDir, defaultextension = '.png')
+    if out:
         eOut.delete(0, 'end')
-        eOut.insert(0, output)
+        eOut.insert(0, out)
+        output = out
+
+def log(log, arg = None):
+    logs = ["Select folder containing all your sprites only",
+            "Select one or more image files",
+            "{} sprites added",
+            "List cleared",
+            "Sprites would {} aligned"]
+    
+    if isinstance(arg, int):
+        logs[2] = logs[2].format(arg)
+    if isinstance(arg, bool):
+        if arg:
+            logs[4] = logs[4].format("horizontally")
+        else:
+            logs[4] = logs[4].format("vertically")
+    
+    lLog.config(text = "-- {} --".format(logs[log]))
 
 ## Main Window 
 window = Tk()
@@ -77,9 +104,8 @@ lSrc = Label(master = frame2, text = "Source Folder: ")
 lSrc.pack(side = 'left')
 
 
-eSrc = Entry(master = frame2, width = 50)
-eSrc.pack(side = 'left')
-eSrc.insert(0, currDir)
+lSrcLoc = Label(master = frame2, width = 50, text = currDir, relief = 'groove')
+lSrcLoc.pack(side = 'left')
 
 bSrc = Button(master = frame2, text = "Browse", command = srcBrowseFolder)
 bSrc.pack(side = 'left', padx = 10)
@@ -100,7 +126,7 @@ sbFiles.pack(side = 'left', fill = 'y')
 lbFiles.config(yscrollcommand = sbFiles.set)
 sbFiles.config(command = lbFiles.yview)
 
-bClear = Button(master = frame3, text = "Clear List", command = clearList)
+bClear = Button(master = frame3, text = "Clear List", command = clearList, state = 'disabled')
 bClear.pack(side = 'left')
 
 ## Frame 4 - Orientation
@@ -112,11 +138,11 @@ lOrien.pack(side = 'left')
 
 horz = BooleanVar()
 
-rOrienH = Radiobutton(master = frame4, text = "Horizontal", variable = horz, value = True, command = setOrientation)
+rOrienH = Radiobutton(master = frame4, text = "Horizontal", variable = horz, value = True, command = lambda: log(4, True))
 rOrienH.pack(side = 'left')
 rOrienH.select()
 
-rOrienV = Radiobutton(master = frame4, text = "Vertical", variable = horz, value = False, command = setOrientation)
+rOrienV = Radiobutton(master = frame4, text = "Vertical", variable = horz, value = False, command = lambda: log(4, False))
 rOrienV.pack(side = 'right')
 
 ## Frame 5 - Output
@@ -128,7 +154,7 @@ lOut.pack(side = 'left')
 
 eOut = Entry(master = frame5, width = 55)
 eOut.pack(side = 'left')
-eOut.insert(0, "D:\Dinu\Spaces\Python\practice\ssMaker\spritesheet.png")
+eOut.insert(0, output)
 
 bOut = Button(master = frame5, text = "Browse", command = outBrowse)
 bOut.pack(side = 'left', padx = 10)
@@ -136,18 +162,15 @@ bOut.pack(side = 'left', padx = 10)
 ## Area 6 - Log
 lLog = Label(master = mainFrame, text = "--Log--")
 lLog.pack(pady = 3)
+log(0)
 
 ## Area 7 - Submit
-bSubmit = Button(master = mainFrame, text = "Make")
+bSubmit = Button(master = mainFrame, text = "Make", state = 'disabled')
 bSubmit.pack(pady = 3)
 
 window.mainloop()
 
 ##from PIL import Image
-##
-##outFolder = "./.."
-##outName = "result"
-##
 ##testImg = Image.open("{}/{}".format(folder, sprites[0]))
 ##imgWidth = testImg.width
 ##imgHeight = testImg.height
