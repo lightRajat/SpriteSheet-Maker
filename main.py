@@ -16,14 +16,27 @@ def srcBrowseFolder():
     if folder:
         eSrc.delete(0, 'end')
         eSrc.insert(0, folder)
-        global sprites
-        sprites.extend(listdir(folder))
+        updateFiles(["{}/{}".format(folder, i) for i in listdir(folder)])
 
 def srcBrowseFiles():
     files = filedialog.askopenfilenames(title = "Select sprites", filetypes = (("Image Files", '*.jpg *.jpeg'), ("Image Files", '*.png')))
     if files:
         global sprites
-        sprites.extend(files)
+        updateFiles(files)
+
+def updateFiles(files):
+    global sprites
+    for i in files:
+        if i not in sprites:
+            sprites.append(i)
+            lbFiles.insert('end', extractNames(i))
+
+def extractNames(path):
+    return path[path.rfind('/') + 1:]
+
+def clearList():
+    sprites.clear()
+    lbFiles.delete(0, 'end')
 
 ## Main Window 
 window = Tk()
@@ -67,16 +80,16 @@ frame3.pack(pady = 3)
 lFiles = Label(master = frame3, text = "Sprites\nSelected: ")
 lFiles.pack(side = 'left')
 
-lbFiles = Listbox(master = frame3)
+lbFiles = Listbox(master = frame3, width = 35)
 lbFiles.pack(side = 'left')
 
 sbFiles = Scrollbar(master = frame3)
-sbFiles.pack(side = 'left', fill = 'both')
+sbFiles.pack(side = 'left', fill = 'y')
 
 lbFiles.config(yscrollcommand = sbFiles.set)
 sbFiles.config(command = lbFiles.yview)
 
-bClear = Button(master = frame3, text = "Clear List")
+bClear = Button(master = frame3, text = "Clear List", command = clearList)
 bClear.pack(side = 'left')
 
 ## Frame 4 - Orientation
