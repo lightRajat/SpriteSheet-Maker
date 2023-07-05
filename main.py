@@ -67,7 +67,8 @@ def log(log, arg = None):
             "{} sprites added",
             "List cleared",
             "Sprites would {} aligned",
-            "Done"]
+            "Done",
+            "Can't process sprites of different formats"]
     
     if isinstance(arg, int):
         logs[2] = logs[2].format(arg)
@@ -83,25 +84,33 @@ def make():
     testImg = Image.open(sprites[0])
     imgWidth = testImg.width
     imgHeight = testImg.height
-    imgFormat = testImg.format
+    imgFormat = sprites[0][sprites[0].rfind('.')+1:]
     del testImg
-    hor = horz.get()
-    output = eOut.get()
-
-    img = Image.new('RGBA', (imgWidth * len(sprites)**hor, imgHeight * len(sprites)**int(not(hor)) ))
-    co = 0
-    if hor:
-        for i in sprites:
-            sprite = Image.open(i)
-            img.paste(sprite, (co, 0))
-            co += imgWidth
+    
+    # check if all images have same format
+    for ele in sprites:
+        if ele[ele.rfind('.')+1:] != imgFormat:
+            clearList()
+            log(6)
+            break
     else:
-        for i in sprites:
-            sprite = Image.open(i)
-            img.paste(sprite, (0, co))
-            co += imgHeight
-    img.save(output)
-    log(5)
+        hor = horz.get()
+        output = eOut.get()
+
+        img = Image.new('RGBA', (imgWidth * len(sprites)**hor, imgHeight * len(sprites)**int(not(hor)) ))
+        co = 0
+        if hor:
+            for i in sprites:
+                sprite = Image.open(i)
+                img.paste(sprite, (co, 0))
+                co += imgWidth
+        else:
+            for i in sprites:
+                sprite = Image.open(i)
+                img.paste(sprite, (0, co))
+                co += imgHeight
+        img.save(output)
+        log(5)
 
 ## Main Window, outer frame & default font
 window = Tk()
