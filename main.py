@@ -24,7 +24,7 @@ def srcBrowseFolder():
     folder = filedialog.askdirectory(title = "Select the folder containing Sprites", initialdir = currDir)
     if folder:
         lSrcLoc.config(text = folder)
-        updateFiles(["{}/{}".format(folder, i) for i in listdir(folder)])
+        updateFiles(["{}/{}".format(folder, i) for i in listdir(folder) if i[i.rfind('.'):] in ('.png', '.jpg', '.jpeg')])
 
 def srcBrowseFiles():
     files = filedialog.askopenfilenames(title = "Select one or more sprites", filetypes = (("Image Files", '*.jpg *.jpeg'), ("Image Files", '*.png')), initialdir = currDir)
