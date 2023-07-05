@@ -82,23 +82,18 @@ def log(log, arg = None):
     lLog.config(text = "-- {} --".format(logs[log]))
 
 def make():
-    testImg = Image.open(sprites[0])
-    imgWidth = testImg.width
-    imgHeight = testImg.height
-    imgFormat = sprites[0][sprites[0].rfind('.')+1:]
-    del testImg
-    
     # check if all images have same format
-    for ele in sprites:
-        if ele[ele.rfind('.')+1:] != imgFormat:
+    sprites[0] = Image.open(sprites[0])
+    for i in range(1, len(sprites)):
+        sprites[i] = Image.open(sprites[i])
+        if sprites[i].format != sprites[0].format:
             clearList()
             log(6)
             break
     else:
         # check if all images have same size
-        for ele in sprites:
-            img = Image.open(ele)
-            if img.width != imgWidth or img.height != imgHeight:
+        for i in range(1, len(sprites)):
+            if sprites[i].height != sprites[0].height or sprites[i].width != sprites[0].width:
                 clearList()
                 log(7)
                 break
@@ -107,18 +102,16 @@ def make():
             hor = horz.get()
             output = eOut.get()
 
-            img = Image.new('RGBA', (imgWidth * len(sprites)**hor, imgHeight * len(sprites)**int(not(hor)) ))
+            img = Image.new('RGBA', (sprites[0].width * len(sprites)**hor, sprites[0].height * len(sprites)**int(not(hor)) ))
             co = 0
             if hor:
-                for i in sprites:
-                    sprite = Image.open(i)
+                for sprite in sprites:
                     img.paste(sprite, (co, 0))
-                    co += imgWidth
+                    co += sprites[0].width
             else:
-                for i in sprites:
-                    sprite = Image.open(i)
+                for sprite in sprites:
                     img.paste(sprite, (0, co))
-                    co += imgHeight
+                    co += sprites[0].height
             img.save(output)
             log(5)
 
