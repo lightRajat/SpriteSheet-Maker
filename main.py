@@ -66,7 +66,8 @@ def log(log, arg = None):
             "Select one or more image files",
             "{} sprites added",
             "List cleared",
-            "Sprites would {} aligned"]
+            "Sprites would {} aligned",
+            "Done"]
     
     if isinstance(arg, int):
         logs[2] = logs[2].format(arg)
@@ -100,6 +101,7 @@ def make():
             img.paste(sprite, (0, co))
             co += imgHeight
     img.save(output)
+    log(5)
 
 ## Main Window, outer frame & default font
 window = Tk()
