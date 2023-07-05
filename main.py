@@ -68,7 +68,8 @@ def log(log, arg = None):
             "List cleared",
             "Sprites would {} aligned",
             "Done",
-            "Can't process sprites of different formats"]
+            "Can't process sprites of different formats",
+            "Can't process sprites of disfferent sizes"]
     
     if isinstance(arg, int):
         logs[2] = logs[2].format(arg)
@@ -94,23 +95,32 @@ def make():
             log(6)
             break
     else:
-        hor = horz.get()
-        output = eOut.get()
-
-        img = Image.new('RGBA', (imgWidth * len(sprites)**hor, imgHeight * len(sprites)**int(not(hor)) ))
-        co = 0
-        if hor:
-            for i in sprites:
-                sprite = Image.open(i)
-                img.paste(sprite, (co, 0))
-                co += imgWidth
+        # check if all images have same size
+        for ele in sprites:
+            img = Image.open(ele)
+            if img.width != imgWidth or img.height != imgHeight:
+                clearList()
+                log(7)
+                break
         else:
-            for i in sprites:
-                sprite = Image.open(i)
-                img.paste(sprite, (0, co))
-                co += imgHeight
-        img.save(output)
-        log(5)
+            # make
+            hor = horz.get()
+            output = eOut.get()
+
+            img = Image.new('RGBA', (imgWidth * len(sprites)**hor, imgHeight * len(sprites)**int(not(hor)) ))
+            co = 0
+            if hor:
+                for i in sprites:
+                    sprite = Image.open(i)
+                    img.paste(sprite, (co, 0))
+                    co += imgWidth
+            else:
+                for i in sprites:
+                    sprite = Image.open(i)
+                    img.paste(sprite, (0, co))
+                    co += imgHeight
+            img.save(output)
+            log(5)
 
 ## Main Window, outer frame & default font
 window = Tk()
