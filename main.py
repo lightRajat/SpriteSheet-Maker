@@ -3,7 +3,8 @@ from os import listdir, getcwd
 from PIL import Image
 
 horz = None # True (later in code)
-sprites = list()
+sprites = [[]]
+currAnim = 1
 currDir = getcwd()
 output = currDir + "\spritesheet.png"
 appFont = ("Comic Sans MS", 16)
@@ -29,29 +30,63 @@ def srcBrowseFolder():
 def srcBrowseFiles():
     files = filedialog.askopenfilenames(title = "Select one or more sprites", filetypes = (("Image Files", '*.jpg *.jpeg'), ("Image Files", '*.png')), initialdir = currDir)
     if files:
-        global sprites
         updateFiles(files)
 
 def updateFiles(files):
     global sprites
     x = 0
     for i in files:
-        if i not in sprites:
+        if i not in sprites[-1]:
             x += 1
-            sprites.append(i)
+            sprites[-1].append(i)
             lbSprites.insert('end', extractNames(i))
-            bClear.config(state = 'normal')
-            bSubmit.config(state = 'normal')
+            bClear['state'] = 'normal'
+            bSubmit['state'] = 'normal'
+            bAddAnim['state'] = 'normal'
+    lbSprites.see('end')
     log(2, x)
 
 def extractNames(path):
     return path[path.rfind('/') + 1:]
 
+def updateSpritesList():
+    for i in sprites[-1]:
+        lbSprites.insert('end', extractNames(i))
+
+def addAnim():
+    sprites.append([])
+    global currAnim
+    currAnim += 1
+    lbAnim.insert('end', "Animation {}".format(currAnim))
+    lbAnim.see('end')
+    bRemAnim['state'] = 'normal'
+    lbSprites.delete(0, 'end')
+    bClear['state'] = 'disabled'
+    bSubmit['state'] = 'disabled'
+    bAddAnim['state'] = 'disabled'
+    log(8)
+
+def remAnim():
+    global currAnim
+    currAnim -= 1
+    sprites.pop()
+    lbAnim.delete('end')
+    lbSprites.delete(0, 'end')
+    updateSpritesList()
+    bClear['state'] = 'normal'
+    bSubmit['state'] = 'normal'
+    bAddAnim['state'] = 'normal'
+
+    if len(sprites) == 1:
+        bRemAnim['state'] = 'disabled'
+    log(9)
+
 def clearList():
-    sprites.clear()
+    sprites[-1].clear()
     lbSprites.delete(0, 'end')
     bClear.config(state = 'disabled')
     bSubmit.config(state = 'disabled')
+    bAddAnim['state'] = 'disabled'
     log(3)
 
 def outBrowse():
@@ -69,7 +104,9 @@ def log(log, arg = None):
             "Sprites would {} aligned",
             "Done",
             "Can't process sprites of different formats",
-            "Can't process sprites of disfferent sizes"]
+            "Can't process sprites of disfferent sizes",
+            "New empty animation added",
+            "Last animation removed"]
     
     if isinstance(arg, int):
         logs[2] = logs[2].format(arg)
@@ -80,6 +117,27 @@ def log(log, arg = None):
             logs[4] = logs[4].format("vertically")
     
     lLog.config(text = "-- {} --".format(logs[log]))
+
+#### new feature
+##
+##def make():
+##    hor = horz.get()
+##    output = eOut.get()
+##
+##    img = Image.new('RGBA', (sprites[0].width * len(sprites)**hor, sprites[0].height * len(sprites)**int(not(hor)) ))
+##    co = 0
+##    if hor:
+##        for sprite in sprites:
+##            img.paste(sprite, (co, 0))
+##            co += sprites[0].width
+##    else:
+##        for sprite in sprites:
+##            img.paste(sprite, (0, co))
+##            co += sprites[0].height
+##    img.save(output)
+##    log(5)
+##
+#### new feature
 
 def make():
     # check if all images have same format
@@ -159,10 +217,10 @@ frame3.pack(pady = 3)
 frame3a = Frame(master = frame3)
 frame3a.pack(side = 'left', padx = 5)
 
-bAddAnim = Button(master = frame3a, text = "Add\nAnimation")
+bAddAnim = Button(master = frame3a, text = "Add\nAnimation", state = 'disabled', command = addAnim)
 bAddAnim.pack(pady = 5)
 
-bRemAnim = Button(master = frame3a, text = "Remove\nAnimation")
+bRemAnim = Button(master = frame3a, text = "Remove\nAnimation", state = 'disabled', command = remAnim)
 bRemAnim.pack(pady = 5)
 
 ### Frame 3b
@@ -181,6 +239,7 @@ frame3ba.grid(row = 1, column = 0)
 
 lbAnim = Listbox(master = frame3ba)
 lbAnim.pack(side = 'left')
+lbAnim.insert(0, "Animation 1")
 
 sbAnim = Scrollbar(master = frame3ba)
 sbAnim.pack(side = 'left', fill = 'y')
