@@ -33,6 +33,10 @@ Well, the interface is very intuitive, but for the sake of completeness, here's 
 
     ![Source](./res/source.png)
 
+* Multiple animations can be added, via the *Add Animation* button and *Remove Animation* button. Sprites of each of them would go to a new line of images.
+
+    ![SpritesSheet](./res/multiple-anim.png)
+
 * Selecting the orientation- *horizontal* or *vertical*- would align the sprites accordingly.
 
     ![Orientation](./res/orientation.png)
