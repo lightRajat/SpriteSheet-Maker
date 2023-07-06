@@ -39,7 +39,7 @@ def updateFiles(files):
         if i not in sprites:
             x += 1
             sprites.append(i)
-            lbFiles.insert('end', extractNames(i))
+            lbSprites.insert('end', extractNames(i))
             bClear.config(state = 'normal')
             bSubmit.config(state = 'normal')
     log(2, x)
@@ -49,7 +49,7 @@ def extractNames(path):
 
 def clearList():
     sprites.clear()
-    lbFiles.delete(0, 'end')
+    lbSprites.delete(0, 'end')
     bClear.config(state = 'disabled')
     bSubmit.config(state = 'disabled')
     log(3)
@@ -155,18 +155,53 @@ bSrc.pack(side = 'left', padx = 10)
 frame3 = Frame(master = mainFrame)
 frame3.pack(pady = 3)
 
-lFiles = Label(master = frame3, text = "Sprites\nSelected: ")
-lFiles.pack(side = 'left')
+### Frame 3a
+frame3a = Frame(master = frame3)
+frame3a.pack(side = 'left', padx = 5)
 
-lbFiles = Listbox(master = frame3, width = 35)
-lbFiles.pack(side = 'left')
+bAddAnim = Button(master = frame3a, text = "Add\nAnimation")
+bAddAnim.pack(pady = 5)
 
-sbFiles = Scrollbar(master = frame3)
-sbFiles.pack(side = 'left', fill = 'y')
+bRemAnim = Button(master = frame3a, text = "Remove\nAnimation")
+bRemAnim.pack(pady = 5)
 
-lbFiles.config(yscrollcommand = sbFiles.set)
-sbFiles.config(command = lbFiles.yview)
+### Frame 3b
+frame3b = Frame(master = frame3)
+frame3b.pack(side = 'left', padx = 5)
 
+lAnim = Label(master = frame3b, text = "Animations")
+lAnim.grid(row = 0, column = 0)
+
+lSprites = Label(master = frame3b, text = "Sprites")
+lSprites.grid(row = 0, column = 1)
+
+#### Frame3ba
+frame3ba = Frame(master = frame3b)
+frame3ba.grid(row = 1, column = 0)
+
+lbAnim = Listbox(master = frame3ba)
+lbAnim.pack(side = 'left')
+
+sbAnim = Scrollbar(master = frame3ba)
+sbAnim.pack(side = 'left', fill = 'y')
+
+lbAnim.config(yscrollcommand = sbAnim.set)
+sbAnim.config(command = lbAnim.yview)
+
+#### Frame3bb
+frame3bb = Frame(master = frame3b)
+frame3bb.grid(row = 1, column = 1)
+
+lbSprites = Listbox(master = frame3bb)
+lbSprites.pack(side = 'left')
+
+sbSprites = Scrollbar(master = frame3bb)
+sbSprites.pack(side = 'left', fill = 'y')
+
+lbSprites.config(yscrollcommand = sbSprites.set)
+sbSprites.config(command = lbSprites.yview)
+
+### Frame 3c
 bClear = Button(master = frame3, text = "Clear List", command = clearList, state = 'disabled')
 bClear.pack(side = 'left')
 
