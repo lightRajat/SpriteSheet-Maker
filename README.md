@@ -10,6 +10,7 @@
 
 1. [What is SpriteSheet Maker](#what-is-spritesheet-maker)
 1. [How to Use](#how-to-use)
+1. [Features](#features)
 1. [Contribute](#contribute)
 1. [BackStory](#little-backstory)
 
@@ -42,6 +43,16 @@ Well, the interface is very intuitive, but for the sake of completeness, here's 
     ![Orientation](./res/orientation.png)
 
 * After Selecting all the images and choosing the *output location and name*, just click *Make* button and Voilah!
+
+- - -
+
+## Features
+
+The below given features summarizes what this whole project is all about. A more detailed description of all the UI-level and low-level features can be checked out here on this project's [features.md](./features.md) file.
+
+1. Option to output sprites of **multiple animations** into a single sprite-sheet image. Each animation would be put on a new line of images.
+
+2. Option to **orient the animations** either *horizontally* or *vertically*.
 
 - - -
 
