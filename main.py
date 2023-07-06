@@ -118,58 +118,85 @@ def log(log, arg = None):
     
     lLog.config(text = "-- {} --".format(logs[log]))
 
-#### new feature
-##
-##def make():
-##    hor = horz.get()
-##    output = eOut.get()
-##
-##    img = Image.new('RGBA', (sprites[0].width * len(sprites)**hor, sprites[0].height * len(sprites)**int(not(hor)) ))
-##    co = 0
-##    if hor:
-##        for sprite in sprites:
-##            img.paste(sprite, (co, 0))
-##            co += sprites[0].width
-##    else:
-##        for sprite in sprites:
-##            img.paste(sprite, (0, co))
-##            co += sprites[0].height
-##    img.save(output)
-##    log(5)
-##
-#### new feature
+def reset():
+    sprites.clear()
+    sprites.append([])
+    lbSprites.delete(0, 'end')
+    lbAnim.delete(1, 'end')
+    bAddAnim['state'] = 'disabled'
+    bRemAnim['state'] = 'disabled'
+    bClear['state'] = 'disabled'
+    bSubmit['state'] = 'disabled'
 
 def make():
     # check if all images have same format
-    sprites[0] = Image.open(sprites[0])
-    for i in range(1, len(sprites)):
-        sprites[i] = Image.open(sprites[i])
-        if sprites[i].format != sprites[0].format:
-            clearList()
-            log(6)
+    sameFormat = True
+    testSprite = Image.open(sprites[0][0])
+    
+    for i in range(len(sprites)):
+        for j in range(len(sprites[i])):
+            sprites[i][j] = Image.open(sprites[i][j])
+            if sprites[i][j].format != testSprite.format:
+                sameFormat = False
+                break
+        if not sameFormat:
             break
+    
+    if not sameFormat:
+        reset()
+        log(6)
     else:
+        del testSprite
+        
         # check if all images have same size
-        for i in range(1, len(sprites)):
-            if sprites[i].height != sprites[0].height or sprites[i].width != sprites[0].width:
-                clearList()
+        sameSize = True
+        for i in range(len(sprites)):
+            w, h = sprites[i][0].width, sprites[i][0].height
+            for j in range(len(sprites[i])):
+                if sprites[i][j].width != w or sprites[i][j].height != h:
+                    sameSize = False
+                    break
+            if not sameSize:
+                reset()
                 log(7)
                 break
         else:
+            del sameFormat, sameSize
+            
             # make
             hor = horz.get()
             output = eOut.get()
 
-            img = Image.new('RGBA', (sprites[0].width * len(sprites)**hor, sprites[0].height * len(sprites)**int(not(hor)) ))
-            co = 0
             if hor:
-                for sprite in sprites:
-                    img.paste(sprite, (co, 0))
-                    co += sprites[0].width
+                imgWidth = max((i[0].width * len(i) for i in sprites))
+                imgHeight = 0
+                for i in sprites:
+                    imgHeight += i[0].height
             else:
-                for sprite in sprites:
-                    img.paste(sprite, (0, co))
-                    co += sprites[0].height
+                imgWidth = 0
+                for i in sprites:
+                    imgWidth += i[0].width
+                imgHeight = max((i[0].height * len(i) for i in sprites))
+            img = Image.new('RGBA', (imgWidth, imgHeight))
+            
+            x, y = 0, 0
+            if hor:
+                for i in sprites:
+                    animWidth = i[0].width
+                    for j in i:
+                        img.paste(j, (x, y))
+                        x += animWidth
+                    x = 0
+                    y += i[0].height
+            else:
+                for i in sprites:
+                    animHeight = i[0].height
+                    for j in i:
+                        img.paste(j, (x, y))
+                        y += animHeight
+                    y = 0
+                    x += i[0].width
+
             img.save(output)
             log(5)
 
